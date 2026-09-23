@@ -5,6 +5,9 @@
 **EQUICAFI** is an educational equity-research platform that brings fundamental analysis, valuation, historical trends, technical indicators, risk metrics, cross-metric reasoning, and hypothetical scenario modelling into a single structured research workspace.
 
 > Research the business. Understand the numbers. Connect the signals.
+> ##  Live Demo
+**Try EQUICAFI:**  
+https://equicafi.streamlit.app
 
 ---
 
