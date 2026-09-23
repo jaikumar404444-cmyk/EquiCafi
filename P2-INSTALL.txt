@@ -1,0 +1,15 @@
+EQUICAFI Prompt 2 — Dashboard
+
+This ZIP contains the replacement dashboard/app.py only.
+
+Extract the contents directly into the existing EQUICAFI project root:
+C:\Users\DELL\OneDrive\Documents\EquiCafi\EQUICAFI
+
+Allow Windows to replace dashboard\app.py.
+
+Then, with the project's .venv activated, run:
+    python -m py_compile .\dashboard\app.py
+    python -m pytest -q
+    streamlit run dashboard\app.py
+
+Prompt 1 engine files are intentionally unchanged.

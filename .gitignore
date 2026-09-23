@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.streamlit/secrets.toml
+.env
+*.db
+*.sqlite3
+reports/generated/
+equicafi.egg-info/
+.venv/
+__pycache__/
+.pytest_cache/
