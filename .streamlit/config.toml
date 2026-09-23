@@ -1,0 +1,19 @@
+﻿[theme]
+base = "dark"
+primaryColor = "#3B8788"
+backgroundColor = "#081630"
+secondaryBackgroundColor = "#0D2436"
+textColor = "#EBEBED"
+borderColor = "#294653"
+showWidgetBorder = true
+linkColor = "#3B8788"
+buttonRadius = "8px"
+baseRadius = "8px"
+chartCategoricalColors = ["#3B8788", "#125358", "#C2C3C5", "#EBEBED"]
+
+[theme.sidebar]
+primaryColor = "#3B8788"
+backgroundColor = "#081630"
+secondaryBackgroundColor = "#0D2436"
+textColor = "#EBEBED"
+borderColor = "#294653"

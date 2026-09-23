@@ -1,6 +1,5 @@
 from __future__ import annotations
 from pathlib import Path
-from base64 import b64encode
 
 from datetime import datetime
 from typing import Iterable
@@ -19,14 +18,14 @@ from equicafi.services.scenario_service import simulate_return
 # ============================================================
 
 st.set_page_config(
-    page_title="EquiCafi",
-    page_icon="dashboard/ei-favicon.png",
+    page_title="EQUICAFI — Equity Intelligence",
+    page_icon="◆",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 
-## ============================================================
+# ============================================================
 # DESIGN SYSTEM
 # ============================================================
 
@@ -35,310 +34,132 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-    /* ========================================================
-       EQUICAFI BRAND PALETTE
-       ======================================================== */
-
     :root {
         --bg: #081630;
         --panel: #0D2436;
         --panel-2: #125358;
-        --panel-3: #184F58;
-
+        --panel-3: #3B8788;
         --line: #294653;
-        --line-soft: rgba(59,135,136,.24);
-
-        --accent: #3B8788;
-        --accent-deep: #125358;
-
-        --text: #EBEBED;
+        --line-soft: rgba(59,135,136,.28);
+        --gold: #3B8788;
+        --gold-soft: #EBEBED;
+        --ivory: #EBEBED;
         --muted: #C2C3C5;
-        --soft: #9FB1B5;
-
-        --chart-line: #3B8788;
-        --chart-point: #EBEBED;
-        --chart-grid: rgba(59,135,136,.10);
+        --green: #3B8788;
+        --green-soft: rgba(59,135,136,.15);
+        --red: #3B8788;
+        --red-soft: rgba(59,135,136,.12);
+        --blue-soft: rgba(59,135,136,.12);
     }
 
-    /* ========================================================
-       GLOBAL TYPOGRAPHY
-       ======================================================== */
-
-    html,
-    body,
-    [class*="css"] {
+    html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
     .stApp {
         background:
-            radial-gradient(
-                circle at 85% 0%,
-                rgba(59,135,136,.14),
-                transparent 28%
-            ),
-            radial-gradient(
-                circle at 12% 100%,
-                rgba(18,83,88,.13),
-                transparent 32%
-            ),
-            linear-gradient(
-                180deg,
-                #081630 0%,
-                #0A1D2E 100%
-            ) !important;
-
-        color: var(--text);
+            radial-gradient(circle at 82% 4%, rgba(59,135,136,.14), transparent 30%),
+            linear-gradient(180deg, #081630 0%, #0B2031 100%);
+        color: var(--ivory);
     }
-
-    /* ========================================================
-       STREAMLIT TOP HEADER
-       Keeps sidebar control usable without covering content.
-       ======================================================== */
-
-    [data-testid="stHeader"] {
-        background: rgba(8,22,48,.94) !important;
-        height: 3.25rem !important;
-        border-bottom: 1px solid rgba(41,70,83,.45);
-    }
-
-    [data-testid="stToolbar"] {
-        background: transparent !important;
-    }
-
-    [data-testid="stToolbar"] button {
-        color: var(--muted) !important;
-    }
-
-    /* Give the custom EQUICAFI header breathing room */
-    .block-container {
-        max-width: 1450px;
-        padding-top: 3.7rem !important;
-        padding-bottom: 3.2rem;
-    }
-
-    /* ========================================================
-       SIDEBAR
-       ======================================================== */
 
     section[data-testid="stSidebar"] {
-        background: #081630 !important;
-        border-right: 1px solid var(--line) !important;
-    }
-
-    section[data-testid="stSidebar"] > div:first-child {
-        height: 100vh !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) transparent;
-    }
-
-    section[data-testid="stSidebar"] > div:first-child::-webkit-scrollbar {
-        width: 7px;
-    }
-
-    section[data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-thumb {
-        background: var(--accent);
-        border-radius: 999px;
+        background: #081630;
+        border-right: 1px solid var(--line);
     }
 
     section[data-testid="stSidebar"] * {
-        color: var(--text);
-    }
-
-    /* Sidebar wordmark */
-    .sidebar-brand {
-        margin: 0 0 28px 0;
-        padding: 5px 2px 0;
+        color: var(--ivory);
     }
 
     .eq-brand {
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 42px;
+        font-size: 44px;
         line-height: .9;
-        letter-spacing: .02em;
-        color: var(--text);
-        text-transform: none;
-    }
-
-    /*
-       Visually converts the existing uppercase sidebar wordmark
-       to the final EquiCafi presentation without touching the
-       underlying application logic.
-    */
-    .eq-brand {
-        font-size: 0;
-    }
-
-    .eq-brand::after {
-        content: "EquiCafi";
-        font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 42px;
-        line-height: .9;
-        letter-spacing: .02em;
-        color: var(--text);
+        letter-spacing: .09em;
+        color: var(--ivory);
     }
 
     .eq-subbrand {
-        margin-top: 8px;
-        color: var(--accent);
-        font-size: 9px;
-        font-weight: 600;
+        margin-top: 9px;
+        color: var(--gold-soft);
+        font-size: 10px;
         text-transform: uppercase;
-        letter-spacing: .18em;
+        letter-spacing: .19em;
     }
 
     .ornament {
-        margin: 15px 0 22px;
-        color: var(--accent);
-        letter-spacing: .42em;
-        font-size: 11px;
+        margin: 16px 0 24px;
+        color: var(--gold);
+        letter-spacing: .45em;
+        font-size: 13px;
     }
-
-    /* ========================================================
-       MAIN BRAND HEADER
-       ======================================================== */
-
-    .main-brand {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin: 0 0 22px;
-        padding-bottom: 17px;
-        border-bottom: 1px solid var(--line);
-    }
-
-    .main-brand img {
-        width: 52px;
-        height: 52px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 1px solid rgba(59,135,136,.42);
-        box-shadow:
-            0 0 0 5px rgba(59,135,136,.05),
-            0 8px 24px rgba(0,0,0,.20);
-    }
-
-    .main-brand-name {
-        font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 32px;
-        line-height: 1;
-        color: var(--text);
-    }
-
-    .main-brand-meta {
-        margin-top: 5px;
-        color: var(--accent);
-        font-size: 9px;
-        font-weight: 600;
-        letter-spacing: .16em;
-        text-transform: uppercase;
-    }
-
-    /* ========================================================
-       EDITORIAL HEADINGS
-       ======================================================== */
 
     .kicker {
-        color: var(--accent);
-        font-size: 9px;
-        font-weight: 600;
+        color: var(--gold);
+        font-size: 10px;
         text-transform: uppercase;
-        letter-spacing: .23em;
+        letter-spacing: .24em;
     }
 
     .hero-title {
-        margin-top: 9px;
+        margin-top: 8px;
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: clamp(46px, 5.4vw, 78px);
-        line-height: .9;
+        font-size: clamp(46px, 5.2vw, 76px);
+        line-height: .92;
         font-weight: 600;
-        color: var(--text);
-        letter-spacing: -.018em;
+        color: var(--ivory);
+        letter-spacing: -.01em;
     }
 
     .hero-meta {
         margin-top: 14px;
         color: var(--muted);
-        font-size: 11px;
-        letter-spacing: .025em;
+        font-size: 12px;
+        letter-spacing: .02em;
     }
 
     .rule {
-        margin: 18px 0 24px;
+        margin: 20px 0 26px;
         height: 1px;
-        background:
-            linear-gradient(
-                90deg,
-                var(--accent),
-                rgba(59,135,136,.20),
-                transparent
-            );
+        background: linear-gradient(90deg, var(--gold), rgba(59,135,136,.18), transparent);
     }
 
     .section-title {
-        margin-top: 30px;
-        color: var(--text);
+        margin-top: 28px;
+        color: var(--ivory);
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 38px;
-        line-height: .98;
-        letter-spacing: -.01em;
+        font-size: 36px;
+        line-height: 1;
     }
 
     .section-subtitle {
         color: var(--muted);
-        font-size: 11px;
-        margin-top: 6px;
-        margin-bottom: 15px;
-        line-height: 1.55;
+        font-size: 12px;
+        margin-top: 5px;
+        margin-bottom: 16px;
     }
-
-    /* ========================================================
-       SIGNAL CARDS
-       ======================================================== */
 
     .signal {
-        min-height: 118px;
-        padding: 17px 17px 15px;
+        background: linear-gradient(145deg, rgba(255,255,255,.028), rgba(255,255,255,.008));
         border: 1px solid var(--line);
-        border-radius: 10px;
-        background:
-            linear-gradient(
-                145deg,
-                rgba(13,36,54,.88),
-                rgba(8,22,48,.72)
-            );
-        transition:
-            border-color .2s ease,
-            transform .2s ease,
-            box-shadow .2s ease;
+        min-height: 108px;
+        padding: 16px 16px 14px;
+        border-radius: 3px;
     }
 
-    .signal:hover,
-    .metric-card:hover,
-    .scenario-box:hover {
-        border-color: rgba(59,135,136,.55);
-        transform: translateY(-1px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.12);
-    }
-
-    .signal-label,
-    .profile-label,
-    .metric-name {
-        color: var(--soft);
+    .signal-label {
+        color: var(--muted);
         font-size: 9px;
-        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: .16em;
+        letter-spacing: .18em;
     }
 
     .signal-value {
-        color: var(--text);
-        font-size: 25px;
+        color: var(--ivory);
+        font-size: 26px;
         font-weight: 600;
         margin-top: 8px;
-        line-height: 1.2;
     }
 
     .signal-note {
@@ -348,18 +169,12 @@ st.markdown(
         margin-top: 5px;
     }
 
-    /* ========================================================
-       PROFILE STRIP
-       ======================================================== */
-
     .profile-strip {
         display: grid;
-        grid-template-columns: 1.35fr .8fr .9fr .9fr;
+        grid-template-columns: 1.4fr .8fr .8fr .8fr;
         border: 1px solid var(--line);
-        border-radius: 10px;
-        overflow: hidden;
         margin-top: 18px;
-        background: rgba(13,36,54,.74);
+        background: rgba(18,20,15,.72);
     }
 
     .profile-cell {
@@ -367,80 +182,38 @@ st.markdown(
         border-right: 1px solid var(--line);
     }
 
-    .profile-cell:last-child {
-        border-right: 0;
+    .profile-cell:last-child { border-right: 0; }
+
+    .profile-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: .15em;
+        color: var(--muted);
     }
 
     .profile-value {
         margin-top: 6px;
         font-size: 13px;
-        color: var(--text);
+        color: var(--ivory);
     }
-
-    /* ========================================================
-       COMPANY SNAPSHOT
-       ======================================================== */
-
-    .snapshot-list {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        overflow: hidden;
-        background: rgba(13,36,54,.72);
-    }
-
-    .snapshot-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 22px;
-        padding: 12px 14px;
-        border-bottom: 1px solid rgba(41,70,83,.72);
-        color: var(--muted);
-        font-size: 11px;
-    }
-
-    .snapshot-row:last-child {
-        border-bottom: 0;
-    }
-
-    .snapshot-row strong {
-        color: var(--text);
-        font-weight: 600;
-        text-align: right;
-        white-space: nowrap;
-    }
-
-    /* ========================================================
-       NOTICES
-       ======================================================== */
 
     .notice {
-        padding: 14px 16px;
+        padding: 15px 17px;
         border: 1px solid var(--line-soft);
-        border-left: 2px solid var(--accent);
-        border-radius: 8px;
-        background: rgba(18,83,88,.10);
-        color: var(--muted);
-        font-size: 11px;
+        border-left: 2px solid var(--gold);
+        background: rgba(59,135,136,.045);
+        color: #C2C3C5;
+        font-size: 12px;
         line-height: 1.65;
-        margin: 16px 0;
+        margin: 18px 0;
     }
-
-    /* ========================================================
-       METRIC CARDS
-       ======================================================== */
 
     .metric-card {
         height: 100%;
         border: 1px solid var(--line);
-        border-radius: 10px;
-        background: rgba(13,36,54,.80);
+        background: rgba(18,20,15,.84);
         padding: 17px 17px 16px;
         margin-bottom: 12px;
-        transition:
-            border-color .2s ease,
-            transform .2s ease,
-            box-shadow .2s ease;
     }
 
     .metric-top {
@@ -450,62 +223,54 @@ st.markdown(
         align-items: start;
     }
 
+    .metric-name {
+        color: var(--gold-soft);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .16em;
+    }
+
     .metric-value {
-        color: var(--text);
+        color: var(--ivory);
         font-size: 27px;
         font-weight: 600;
-        line-height: 1.2;
         margin-top: 7px;
     }
 
     .metric-status {
-        font-size: 8px;
-        font-weight: 600;
-        letter-spacing: .13em;
+        font-size: 9px;
+        letter-spacing: .14em;
         text-transform: uppercase;
-        color: var(--accent);
-        border: 1px solid rgba(59,135,136,.30);
-        border-radius: 999px;
-        padding: 4px 8px;
+        color: var(--green);
+        border: 1px solid rgba(113,138,115,.28);
+        padding: 4px 7px;
         white-space: nowrap;
     }
 
     .metric-copy {
-        margin-top: 13px;
-        color: var(--muted);
-        font-size: 10.5px;
-        line-height: 1.68;
+        margin-top: 12px;
+        color: #b7b3a7;
+        font-size: 11px;
+        line-height: 1.62;
     }
 
-    .metric-copy strong {
-        color: var(--text);
-    }
+    .metric-copy strong { color: var(--ivory); }
 
     .metric-observation {
-        margin-top: 12px;
+        margin-top: 11px;
         padding-top: 10px;
-        border-top: 1px solid rgba(59,135,136,.15);
-        color: var(--muted);
-        font-size: 10.5px;
+        border-top: 1px solid rgba(59,135,136,.12);
+        color: #C2C3C5;
+        font-size: 11px;
         line-height: 1.58;
     }
 
-    /* ========================================================
-       OBSERVATION CARDS
-       ======================================================== */
-
     .observation-card {
         border: 1px solid var(--line);
-        border-left: 2px solid var(--accent);
-        border-radius: 10px;
-        padding: 17px 18px;
+        border-left: 2px solid var(--gold);
+        padding: 18px 19px;
         margin-bottom: 11px;
-        background:
-            linear-gradient(
-                145deg,
-                rgba(13,36,54,.82),
-                rgba(8,22,48,.62)
-            );
+        background: linear-gradient(145deg, rgba(255,255,255,.024), rgba(255,255,255,.008));
     }
 
     .obs-top {
@@ -515,341 +280,204 @@ st.markdown(
         gap: 12px;
     }
 
-    .obs-index,
-    .obs-related {
-        color: var(--accent);
-        font-size: 8px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: .15em;
+    .obs-index {
+        color: var(--gold);
+        font-size: 9px;
+        letter-spacing: .18em;
     }
 
     .obs-badge {
         padding: 4px 7px;
-        border: 1px solid rgba(59,135,136,.28);
-        border-radius: 999px;
-        font-size: 8px;
-        letter-spacing: .12em;
-        color: var(--accent);
+        border: 1px solid var(--line);
+        font-size: 9px;
+        letter-spacing: .14em;
     }
 
-    .obs-badge.watch,
-    .obs-badge.risk,
-    .obs-badge.info {
-        color: var(--accent);
-        border-color: rgba(59,135,136,.28);
-        background: rgba(59,135,136,.07);
-    }
+    .obs-badge.watch { color: var(--red); border-color: rgba(144,96,90,.35); }
+    .obs-badge.risk { color: #3B8788; border-color: rgba(183,124,115,.35); }
+    .obs-badge.info { color: var(--gold-soft); }
 
     .obs-title {
-        margin-top: 10px;
-        color: var(--text);
+        margin-top: 11px;
+        color: var(--ivory);
         font-family: 'Cormorant Garamond', Georgia, serif;
         font-size: 27px;
-        line-height: 1.14;
+        line-height: 1.15;
     }
 
     .obs-body {
         margin-top: 8px;
-        color: var(--muted);
-        font-size: 11px;
+        color: #C2C3C5;
+        font-size: 12px;
         line-height: 1.7;
         max-width: 940px;
     }
 
-    /* ========================================================
-       CAPITAL LAB
-       ======================================================== */
+    .obs-related {
+        margin-top: 11px;
+        color: var(--gold);
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+    }
 
     .lab-hero {
-        border: 1px solid rgba(59,135,136,.38);
-        border-radius: 12px;
+        border: 1px solid var(--gold);
         background:
-            radial-gradient(
-                circle at 100% 0%,
-                rgba(59,135,136,.15),
-                transparent 38%
-            ),
-            rgba(13,36,54,.84);
-        padding: 24px 25px;
+            radial-gradient(circle at 100% 0%, rgba(59,135,136,.12), transparent 38%),
+            rgba(18,20,15,.9);
+        padding: 25px 26px;
         margin: 14px 0 17px;
     }
 
     .lab-number {
         margin-top: 4px;
         font-family: 'Cormorant Garamond', Georgia, serif;
-        color: var(--text);
-        font-size: clamp(37px, 4vw, 54px);
+        color: var(--ivory);
+        font-size: 53px;
         line-height: .98;
     }
 
     .lab-copy {
         margin-top: 10px;
         color: var(--muted);
-        font-size: 11px;
+        font-size: 12px;
         line-height: 1.6;
-        max-width: 820px;
+        max-width: 800px;
     }
 
     .scenario-box {
         border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 17px;
-        background: rgba(13,36,54,.80);
-        transition:
-            border-color .2s ease,
-            transform .2s ease,
-            box-shadow .2s ease;
+        padding: 18px;
+        background: rgba(18,20,15,.78);
     }
 
     .scenario-title {
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 24px;
-        color: var(--text);
+        font-size: 25px;
+        color: var(--ivory);
         margin-bottom: 8px;
     }
 
     .scenario-small {
         color: var(--muted);
         font-size: 10px;
-        line-height: 1.7;
+        line-height: 1.6;
     }
-
-    /* ========================================================
-       INTERACTION SYSTEM — TEAL ONLY
-       ======================================================== */
-
-    button[kind="primary"],
-    div.stButton > button[kind="primary"] {
-        background: var(--accent) !important;
-        border: 1px solid var(--accent) !important;
-        color: var(--text) !important;
-        border-radius: 8px !important;
-        box-shadow: none !important;
-        transition:
-            background .18s ease,
-            border-color .18s ease,
-            transform .18s ease;
-    }
-
-    button[kind="primary"]:hover,
-    div.stButton > button[kind="primary"]:hover {
-        background: var(--accent-deep) !important;
-        border-color: var(--accent) !important;
-        transform: translateY(-1px);
-    }
-
-    div.stButton > button:not([kind="primary"]) {
-        background: var(--panel) !important;
-        border: 1px solid var(--line) !important;
-        color: var(--text) !important;
-        border-radius: 8px !important;
-    }
-
-    div.stButton > button:not([kind="primary"]):hover {
-        border-color: var(--accent) !important;
-        color: var(--text) !important;
-    }
-
-    input,
-    textarea {
-        background: var(--panel) !important;
-        color: var(--text) !important;
-        border-color: var(--line) !important;
-        border-radius: 8px !important;
-        box-shadow: none !important;
-    }
-
-    input:focus,
-    textarea:focus,
-    div[data-baseweb="select"] > div:focus-within {
-        border-color: var(--accent) !important;
-        box-shadow: 0 0 0 1px var(--accent) !important;
-    }
-
-    [data-baseweb="select"] > div {
-        background: var(--panel) !important;
-        color: var(--text) !important;
-        border-color: var(--line) !important;
-        border-radius: 8px !important;
-    }
-
-    /* ========================================================
-       RADIO NAVIGATION — REPLACE RED WITH TEAL
-       ======================================================== */
-
-    [data-testid="stRadio"] input[type="radio"],
-    input[type="radio"] {
-        accent-color: var(--accent) !important;
-    }
-
-    [data-testid="stRadio"] label {
-        color: var(--muted) !important;
-        border-radius: 7px !important;
-        padding: 6px 8px !important;
-        margin-bottom: 2px !important;
-        transition:
-            background .18s ease,
-            color .18s ease,
-            border-color .18s ease;
-    }
-
-    [data-testid="stRadio"] label:hover {
-        background: rgba(59,135,136,.08) !important;
-        color: var(--text) !important;
-    }
-
-    [data-testid="stRadio"] label:has(input:checked) {
-        background: rgba(59,135,136,.16) !important;
-        color: var(--text) !important;
-        border-left: 2px solid var(--accent) !important;
-    }
-
-    [data-testid="stRadio"] label:has(input:checked) span {
-        color: var(--text) !important;
-    }
-
-    /* ========================================================
-       SLIDERS — REMOVE RED
-       ======================================================== */
-
-    [data-testid="stSlider"] {
-        accent-color: var(--accent) !important;
-    }
-
-    [data-testid="stSlider"] [role="slider"] {
-        background: var(--accent) !important;
-        border-color: var(--accent) !important;
-        box-shadow: 0 0 0 2px rgba(59,135,136,.15) !important;
-    }
-
-    [data-testid="stSlider"] div[data-baseweb="slider"] > div > div {
-        background: var(--accent) !important;
-    }
-
-    input[type="range"] {
-        accent-color: var(--accent) !important;
-    }
-
-    /* ========================================================
-       EXPANDERS / TABLES / TABS
-       ======================================================== */
-
-    [data-testid="stExpander"] {
-        border: 1px solid var(--line) !important;
-        border-radius: 9px !important;
-        background: rgba(13,36,54,.60) !important;
-    }
-
-    [data-testid="stDataFrame"] {
-        border: 1px solid var(--line) !important;
-        border-radius: 10px !important;
-        overflow: hidden !important;
-        background: rgba(13,36,54,.55) !important;
-    }
-
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: transparent !important;
-    }
-
-    .stTabs [data-baseweb="tab"] {
-        color: var(--muted) !important;
-        padding: 8px 12px !important;
-        border-bottom: 2px solid transparent !important;
-    }
-
-    .stTabs [aria-selected="true"] {
-        color: var(--text) !important;
-        border-bottom-color: var(--accent) !important;
-    }
-
-    /* ========================================================
-       FOOTER
-       ======================================================== */
 
     .footer {
         border-top: 1px solid var(--line);
         margin-top: 44px;
-        padding: 19px 0 30px;
+        padding: 20px 0 34px;
         color: var(--muted);
-        font-size: 9.5px;
+        font-size: 10px;
         line-height: 1.7;
     }
 
-    /* ========================================================
-       MOBILE
-       ======================================================== */
-
     @media (max-width: 900px) {
-
-        .profile-strip {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .profile-cell:nth-child(2) {
-            border-right: 0;
-        }
-
-        .profile-cell:nth-child(-n+2) {
-            border-bottom: 1px solid var(--line);
-        }
-
-        .hero-title {
-            font-size: clamp(42px, 11vw, 62px);
-        }
-
-        .main-brand {
-            margin-bottom: 17px;
-        }
-
-        .snapshot-row {
-            gap: 12px;
-        }
+        .profile-strip { grid-template-columns: 1fr 1fr; }
+        .profile-cell:nth-child(2) { border-right: 0; }
+        .profile-cell:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
     }
-/* ========================================================
-   FORCE RADIO SELECTOR TO EQUICAFI TEAL
-   ======================================================== */
 
-[data-testid="stRadio"] input[type="radio"] {
-    appearance: none !important;
-    -webkit-appearance: none !important;
-
-    width: 14px !important;
-    height: 14px !important;
-
-    margin: 0 8px 0 0 !important;
-
-    border: 2px solid #294653 !important;
-    border-radius: 50% !important;
-
-    background: transparent !important;
-    box-shadow: none !important;
-
-    cursor: pointer !important;
-}
-
-[data-testid="stRadio"] input[type="radio"]:checked {
-    border-color: #3B8788 !important;
-    background:
-        radial-gradient(
-            circle,
-            #3B8788 0 45%,
-            transparent 48%
-        ) !important;
-}
-
-[data-testid="stRadio"] label:has(input[type="radio"]:checked) {
-    color: #EBEBED !important;
-    background: rgba(59,135,136,.16) !important;
-    border-left: 2px solid #3B8788 !important;
-}
-
-[data-testid="stRadio"] label:has(input[type="radio"]:checked) * {
-    color: #EBEBED !important;
-}
-    </style>
     
+    /* EQUICAFI FINAL BRAND SYSTEM */
+
+    [data-testid="stHeader"] {
+        background: #081630 !important;
+    }
+
+    [data-testid="stToolbar"] {
+        background: #081630 !important;
+    }
+
+    section[data-testid="stSidebar"] {
+        background: #081630 !important;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(circle at 82% 4%, rgba(59,135,136,.14), transparent 30%),
+            linear-gradient(180deg, #081630 0%, #0B2031 100%) !important;
+        color: #EBEBED !important;
+    }
+
+    section[data-testid="stSidebar"] * {
+        color: #EBEBED !important;
+    }
+
+    div.stButton > button[kind="primary"] {
+        background: #3B8788 !important;
+        border: 1px solid #3B8788 !important;
+        color: #EBEBED !important;
+    }
+
+    div.stButton > button[kind="primary"]:hover {
+        background: #125358 !important;
+        border-color: #3B8788 !important;
+    }
+
+    div.stButton > button:not([kind="primary"]) {
+        background: #0D2436 !important;
+        border: 1px solid #294653 !important;
+        color: #EBEBED !important;
+    }
+
+    input,
+    textarea {
+        background: #0D2436 !important;
+        color: #EBEBED !important;
+        border-color: #294653 !important;
+    }
+
+    [data-baseweb="select"] > div {
+        background: #0D2436 !important;
+        color: #EBEBED !important;
+        border-color: #294653 !important;
+    }
+
+    .eq-brand {
+        color: #EBEBED !important;
+    }
+
+    .eq-subbrand {
+        color: #3B8788 !important;
+    }
+
+    .ornament {
+        color: #3B8788 !important;
+    }
+
+    .kicker {
+        color: #3B8788 !important;
+    }
+
+    .rule {
+        background: linear-gradient(
+            90deg,
+            #3B8788,
+            rgba(59,135,136,.25),
+            transparent
+        ) !important;
+    }
+
+    .signal,
+    .metric-card,
+    .scenario-box {
+        background: rgba(13,36,54,.82) !important;
+        border-color: #294653 !important;
+    }
+
+    .profile-strip {
+        background: rgba(13,36,54,.78) !important;
+    }
+
+    .notice {
+        border-left-color: #3B8788 !important;
+        background: rgba(59,135,136,.07) !important;
+    }
+
+    </style>
     """,
     unsafe_allow_html=True,
 )
@@ -874,7 +502,7 @@ def currency_symbol(currency: str) -> str:
 
 def money(value: float | None, currency: str = "INR") -> str:
     if value is None:
-        return "—"
+        return "?"
 
     value = float(value)
     symbol = currency_symbol(currency)
@@ -910,7 +538,7 @@ def money(value: float | None, currency: str = "INR") -> str:
 
 def metric_value_text(metric: Metric, currency: str) -> str:
     if metric.value is None:
-        return "—"
+        return "?"
 
     value = float(metric.value)
     unit = str(metric.unit).strip().lower()
@@ -919,7 +547,7 @@ def metric_value_text(metric: Metric, currency: str) -> str:
         return f"{value:.2f}%"
 
     if unit in {"x", "times"}:
-        return f"{value:.2f}×"
+        return f"{value:.2f}?"
 
     if unit in {
         "/share",
@@ -928,11 +556,10 @@ def metric_value_text(metric: Metric, currency: str) -> str:
         "usd/share",
         "eur/share",
         "gbp/share",
-        "currency/share",
     }:
         return f"{currency_symbol(currency)}{value:,.2f}/share"
 
-    if unit in {"currency", "inr", "₹"} or unit == str(currency).lower():
+    if unit in {"currency", "inr", "?"} or unit == str(currency).lower():
         return money(value, currency)
 
     return f"{value:,.2f}{metric.unit}"
@@ -1058,81 +685,6 @@ def plot_history(frame: pd.DataFrame, column: str, title: str, y_prefix: str = "
     st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
 
 
-def logo_data_uri(path: Path) -> str:
-    try:
-        encoded = b64encode(path.read_bytes()).decode("ascii")
-        return f"data:image/png;base64,{encoded}"
-    except OSError:
-        return ""
-
-
-def render_main_brand() -> None:
-    logo_path = Path(__file__).resolve().parent / "ei.png"
-    logo_uri = logo_data_uri(logo_path)
-    img = f'<img src="{logo_uri}" alt="EquiCafi mark">' if logo_uri else ""
-    st.markdown(
-        f"""
-        <div class="main-brand">
-            {img}
-            <div>
-                <div class="main-brand-name">EquiCafi</div>
-                <div class="main-brand-meta">Equity Intelligence Engine</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
-def snapshot_row(label: str, value: str) -> str:
-    return f'<div class="snapshot-row"><span>{label}</span><strong>{value}</strong></div>'
-
-
-def plot_price_history(price_history, title: str = "Observed price history") -> None:
-    if not price_history or len(price_history.close) < 2:
-        st.info("No usable price-history series is available for this chart.")
-        return
-
-    frame = pd.DataFrame(
-        {
-            "Date": [str(d) for d in price_history.dates],
-            "Close": price_history.close,
-        }
-    ).tail(504)
-
-    symbol = currency_symbol("INR")
-    fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=frame["Date"],
-            y=frame["Close"],
-            mode="lines",
-            line=dict(color="#EBEBED", width=1.8),
-            fill="tozeroy",
-            fillcolor="rgba(59,135,136,.08)",
-            hovertemplate=f"%{{x}}<br>{symbol}%{{y:,.2f}}<extra></extra>",
-        )
-    )
-    fig.update_layout(
-        title=title,
-        template="plotly_dark",
-        height=420,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#EBEBED", family="Inter"),
-        margin=dict(l=8, r=8, t=48, b=8),
-        xaxis=dict(showgrid=False, color="#C2C3C5"),
-        yaxis=dict(gridcolor="rgba(59,135,136,.11)", zeroline=False, color="#C2C3C5"),
-        hoverlabel=dict(bgcolor="#125358", font_color="#EBEBED"),
-        hovermode="x unified",
-    )
-    st.plotly_chart(
-        fig,
-        width="stretch",
-        config={"displaylogo": False, "displayModeBar": False, "scrollZoom": False},
-    )
-
-
 def run_analysis(ticker: str) -> AnalysisResult:
     return AnalysisService().analyze(ticker)
 
@@ -1142,13 +694,12 @@ def run_analysis(ticker: str) -> AnalysisResult:
 # ============================================================
 
 with st.sidebar:
+    st.image("dashboard/ei.png", width=82)
     st.markdown(
         """
-        <div class="sidebar-brand">
-            <div class="eq-brand">EquiCafi</div>
-            <div class="eq-subbrand">Equity Intelligence Engine</div>
-            <div class="ornament">✦ · ✦ · ✦</div>
-        </div>
+        <div class="eq-brand">EQUICAFI</div>
+        <div class="eq-subbrand">Equity Intelligence Engine</div>
+        <div class="ornament">✦ - ✦ - ✦</div>
         """,
         unsafe_allow_html=True,
     )
@@ -1203,7 +754,6 @@ if analyse:
 
 result = st.session_state.result
 
-render_main_brand()
 
 # ============================================================
 # LANDING
@@ -1337,18 +887,50 @@ if page == "Overview":
             ("Debt / Equity", "Debt / Equity"),
             ("Interest Coverage", "Interest Coverage"),
         ]
-        rows = []
         for label, name in key_snapshot:
             m = metrics.get(name)
             if m:
-                rows.append(snapshot_row(label, metric_value_text(m, currency)))
-        st.markdown(
-            '<div class="snapshot-list">' + "".join(rows) + '</div>',
-            unsafe_allow_html=True,
-        )
+                st.markdown(
+                    f"**{label}**  \\  {metric_value_text(m, currency)}",
+                )
 
     with right:
-        plot_price_history(result.price_history, "Observed price history")
+        if result.price_history and len(result.price_history.close) >= 2:
+            price_df = pd.DataFrame(
+                {
+                    "Date": [str(d) for d in result.price_history.dates],
+                    "Close": result.price_history.close,
+                }
+            )
+            price_df = price_df.tail(252)
+            fig = go.Figure()
+            fig.add_trace(
+                go.Scatter(
+                    x=price_df["Date"],
+                    y=price_df["Close"],
+                    mode="lines",
+                    line=dict(color="#3B8788", width=2),
+                    hovertemplate="%{x}<br>INR %{y:,.2f}<extra></extra>",
+                )
+            )
+            fig.update_layout(
+                title="Observed price history",
+                template="plotly_dark",
+                height=290,
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#EBEBED", family="Inter"),
+                margin=dict(l=5, r=5, t=44, b=5),
+                xaxis=dict(showgrid=False),
+                yaxis=dict(gridcolor="rgba(59,135,136,.10)", zeroline=False),
+            )
+            st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
+        else:
+            st.markdown(
+                '<div class="notice">No usable price-history series is available for a chart.</div>',
+                unsafe_allow_html=True,
+            )
+
     section("Method in One Line")
     st.markdown(
         "**EQUICAFI does not rely on one ratio.** It connects growth, profitability, cash conversion, valuation, leverage, liquidity and observed market behaviour so that the user can see how the pieces fit together."
@@ -1398,29 +980,23 @@ elif page == "Fundamentals":
 # ============================================================
 
 elif page == "History":
-    section("Historical Research", "Use history to understand change over time — not just the latest number.")
+    section("Historical Research", "Use the history view to ask what changed over time, not just what the latest number is.")
 
-    financial_tab, price_tab = st.tabs(["Financial History", "Price History"])
+    frame = series_dataframe(result.history)
+    if frame.empty:
+        st.markdown('<div class="notice">No multi-period financial history is available for this analysis.</div>', unsafe_allow_html=True)
+    else:
+        numeric_columns = [column for column in frame.columns if pd.api.types.is_numeric_dtype(frame[column])]
+        if numeric_columns:
+            choice = st.selectbox("Financial series", numeric_columns)
+            plot_history(frame, choice, f"Historical {choice}")
+            st.dataframe(frame[[choice]], width="stretch")
 
-    with financial_tab:
-        frame = series_dataframe(result.history)
-        if frame.empty:
-            st.markdown('<div class="notice">No multi-period financial history is available for this analysis.</div>', unsafe_allow_html=True)
-        else:
-            numeric_columns = [column for column in frame.columns if pd.api.types.is_numeric_dtype(frame[column])]
-            if numeric_columns:
-                choice = st.selectbox("Financial series", numeric_columns, key="history_financial_series")
-                plot_history(frame, choice, f"Historical {choice}")
-                with st.expander("View underlying financial data"):
-                    st.dataframe(frame[[choice]], width="stretch")
+        if result.historical_observations:
+            section("Historical Observations")
+            for index, obs in enumerate(result.historical_observations, start=1):
+                render_observation(obs, index)
 
-    with price_tab:
-        plot_price_history(result.price_history, "Observed price history")
-
-    if result.historical_observations:
-        section("Historical Observations")
-        for index, obs in enumerate(result.historical_observations, start=1):
-            render_observation(obs, index)
 
 # ============================================================
 # VALUATION
@@ -1448,8 +1024,7 @@ elif page == "Valuation":
         if numeric_columns:
             choice = st.selectbox("Valuation series", numeric_columns)
             plot_history(valuation_frame, choice, f"Historical {choice}")
-            with st.expander("View underlying valuation data"):
-                st.dataframe(valuation_frame[[choice]], width="stretch")
+            st.dataframe(valuation_frame[[choice]], width="stretch")
 
     st.markdown(
         '<div class="notice"><strong>Methodology:</strong> P/E, P/B, P/S and enterprise-value multiples can answer different valuation questions. EQUICAFI therefore pairs them with growth, profitability, cash-flow and balance-sheet context instead of turning one multiple into a standalone conclusion.</div>',
@@ -1601,7 +1176,7 @@ elif page == "Capital Lab":
                     <div class="scenario-box">
                         <div class="scenario-title">Automatic price</div>
                         <div class="scenario-small">
-                            <strong>{currency_symbol(currency)}{share_price:,.2f}</strong><br>
+                            <strong>{currency} {share_price:,.2f}</strong><br>
                             Source: {price_source}<br>
                             Status: latest available price in this analysis
                         </div>
@@ -1652,9 +1227,9 @@ elif page == "Capital Lab":
                     <div class="scenario-title">Capital deployment</div>
                     <div class="scenario-small">
                         <strong>{deployment.shares:,} whole shares</strong><br>
-                        Capital deployed: <strong>{currency_symbol(currency)}{deployment.invested:,.2f}</strong><br>
-                        Cash remaining: <strong>{currency_symbol(currency)}{deployment.cash_remaining:,.2f}</strong><br>
-                        Price used: <strong>{currency_symbol(currency)}{share_price:,.2f}</strong>
+                        Capital deployed: <strong>{currency} {deployment.invested:,.2f}</strong><br>
+                        Cash remaining: <strong>{currency} {deployment.cash_remaining:,.2f}</strong><br>
+                        Price used: <strong>{currency} {share_price:,.2f}</strong>
                     </div>
                 </div>
                 """,
@@ -1701,7 +1276,7 @@ elif page == "Capital Lab":
                     textposition="outside",
                     hovertemplate=(
                         "%{x}<br>"
-                        + currency_symbol(currency)
+                        + currency
                         + " %{y:,.0f}<extra></extra>"
                     ),
                 )
@@ -1740,7 +1315,7 @@ elif page == "Capital Lab":
 st.markdown(
     f"""
     <div class="footer">
-        <strong>EquiCafi</strong> · Equity Intelligence Engine<br>
+        <strong>EQUICAFI</strong> · Equity Intelligence Engine<br>
         Analysis generated {datetime.now().strftime('%d %b %Y')} ·
         Educational / analytical use · Real provider data where available · DEMO is synthetic.
     </div>
